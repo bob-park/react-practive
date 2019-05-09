@@ -1,0 +1,5 @@
+*/*.idea/*
+*/module_modules/*
+*/*.next/*
+*/yarn.lock
+*/*.eslintrc
