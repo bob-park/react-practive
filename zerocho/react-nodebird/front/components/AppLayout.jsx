@@ -11,7 +11,11 @@ const AppLayout = ({ children }) => {
             <a>노드버드</a>
           </Link>
         </Menu.Item>
-        <Menu.Item key="profile">프로필</Menu.Item>
+        <Menu.Item key="profile">
+          <Link href="/profile">
+            <a>프로필</a>
+          </Link>
+        </Menu.Item>
         <Menu.Item key="mail">
           <Input.Search enterButton style={{ verticalAlign: "middle" }} />
         </Menu.Item>
