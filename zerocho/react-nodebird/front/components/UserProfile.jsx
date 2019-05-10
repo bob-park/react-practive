@@ -1,4 +1,5 @@
 import React from "react";
+import Proptype from "prop-types";
 
 import { Card, Avatar } from "antd";
 
@@ -25,5 +26,10 @@ const UserProfile = ({ dummy }) => {
     </Card>
   );
 };
+
+UserProfile.propTypes = {
+  dummy : Proptype.object
+};
+
 
 export default UserProfile;

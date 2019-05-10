@@ -3,9 +3,17 @@ import Head from "next/head";
 import PropTypes from "prop-types";
 import AppLayout from "../components/AppLayout";
 
-const NodeBird = ({ Component }) => {
+import withRedux from "next-redux-wrapper";
+
+import { Provider } from "react-redux";
+
+import { createStore, compose, applyMiddleware } from "redux";
+
+import reducer from "../reducers";
+
+const NodeBird = ({ Component, store }) => {
   return (
-    <>
+    <Provider store={store}>
       <Head>
         <title>Node Bird</title>
         <link
@@ -17,12 +25,27 @@ const NodeBird = ({ Component }) => {
       <AppLayout>
         <Component />
       </AppLayout>
-    </>
+    </Provider>
   );
 };
 
 NodeBird.propTypes = {
-  Component: PropTypes.elementType
+  Component: PropTypes.elementType,
+  store: PropTypes.object
 };
 
-export default NodeBird;
+export default withRedux((initialState, options) => {
+  // 커스터 마이징
+  const middleWares = [];
+  const enhancer = compose(
+    // middleWare 합성 역할
+    applyMiddleware(...middleWares),
+      !options.isServer &&
+      window.__REDUX_DEVTOOLS_EXTENSION__ !== "undefined"
+      ? window.__REDUX_DEVTOOLS_EXTENSION__()
+      : f => f // Redux-DevTools 사용하기 위한 함수
+  );
+  // const store = createStore(reducer, initialState, enhancer);
+  // return store;
+  return createStore(reducer, initialState, enhancer);
+})(NodeBird);
