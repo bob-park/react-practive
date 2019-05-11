@@ -1,5 +1,10 @@
 import { all, fork, put, call, takeLatest, delay } from "redux-saga/effects";
-import { LOG_IN, LOG_IN_SUCCESS, LOG_IN_FAILURE } from "../reducers/user";
+
+import {
+  LOG_IN_REQUEST,
+  LOG_IN_SUCCESS,
+  LOG_IN_FAILURE
+} from "../reducers/user";
 
 function loginAPI() {
   // LOG_IN API 요청
@@ -12,7 +17,7 @@ function* login() {
     yield call(loginAPI);
 
     // dispatch 와 같은 역할
-    yield delay(10000);
+    yield delay(1000);
     yield put({
       type: LOG_IN_SUCCESS
     });
@@ -27,7 +32,7 @@ function* login() {
 function* watchLogin() {
   // [1] LOG_IN 액션을 기다림
   // [2] LOG_IN 액션이 들어오면 login() 실행
-  yield takeLatest(LOG_IN, login);
+  yield takeLatest(LOG_IN_REQUEST, login);
 }
 
 export default function* userSaga() {
