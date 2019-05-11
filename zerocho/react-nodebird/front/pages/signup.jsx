@@ -1,24 +1,22 @@
-import React, { useState, useCallback  } from "react";
+import React, { useState, useCallback } from "react";
+
+import { useDispatch } from "react-redux";
+import { singUpAction } from "../reducers/user";
 
 import { Form, Input, Checkbox, Button } from "antd";
 
 export const useInput = (initValue = null) => {
   const [value, setter] = useState(initValue);
-  const handler = useCallback(
-      e => {
-        const { value } = e.target;
+  const handler = useCallback(e => {
+    const { value } = e.target;
 
-        setter(value);
-      },
-      []
-  );
+    setter(value);
+  }, []);
   return [value, handler];
 };
 
 const SignUp = () => {
   // Custom Hooks
-
-
   const [id, onChangeId] = useInput("");
   const [nick, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
@@ -30,6 +28,8 @@ const SignUp = () => {
   const [term, setTerm] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [termError, setTermError] = useState(false);
+
+  const dispatch = useDispatch();
 
   const onSubmit = useCallback(
     e => {
@@ -43,14 +43,13 @@ const SignUp = () => {
         return setTermError(true);
       }
 
-      // eslint-disable-next-line no-console
-      console.log({
-        id,
-        nick,
-        password,
-        passwordCheck,
-        term
-      });
+      dispatch(
+        singUpAction({
+          id,
+          nick,
+          password
+        })
+      );
     },
     [password, passwordCheck, term]
   );

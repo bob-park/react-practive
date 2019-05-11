@@ -1,5 +1,13 @@
 export const initialState = {
-  mainPosts: []
+  mainPosts: [{
+    User: {
+      id: 1,
+      nickname: "현우박"
+    },
+    content: "첫번째 게시글",
+    img: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+  }],
+  imagePaths: []
 };
 
 const ADD_POST = "ADD_POST";

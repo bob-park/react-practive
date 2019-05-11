@@ -1,4 +1,8 @@
 import React, { useCallback } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { loginAction } from "../reducers/user";
+
 import { Button, Form, Input } from "antd";
 import Link from "next/link";
 
@@ -8,15 +12,19 @@ const LoginForm = () => {
   const [userId, onChangeId] = useInput("");
   const [userPassword, onChangePassword] = useInput("");
 
+  const { isLoggedInPending } = useSelector(state => state.user, []);
+
+  const dispatch = useDispatch();
   const onSubmitForm = useCallback(
     e => {
       e.preventDefault();
 
-      // eslint-disable-next-line no-console
-      console.log({
-        userId,
-        userPassword
-      });
+      dispatch(
+        loginAction({
+          userId,
+          userPassword
+        })
+      );
     },
     [userId, userPassword]
   );
@@ -39,9 +47,9 @@ const LoginForm = () => {
           required
         />
       </div>
-      <div style={{marginTop : "10px"}}>
-        <Button type="primary" htmlType="submit" loading={false}>
-          로그인
+      <div style={{ marginTop: "10px" }}>
+        <Button type="primary" htmlType="submit" loading={isLoggedInPending}>
+            { isLoggedInPending ? "로그인 중" : "로그인"}
         </Button>
         <Link href="/signup">
           <a>

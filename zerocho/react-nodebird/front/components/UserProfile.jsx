@@ -1,35 +1,42 @@
-import React from "react";
-import Proptype from "prop-types";
+import React, { useCallback } from "react";
 
-import { Card, Avatar } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 
-const UserProfile = ({ dummy }) => {
+import { logoutAction } from "../reducers/user";
+
+import { Card, Avatar, Button } from "antd";
+
+const UserProfile = () => {
+  const { user } = useSelector(state => state.user, []);
+
+  const dispatch = useDispatch();
+
+  const onLogout = useCallback(() => {
+    dispatch(logoutAction);
+  });
+
   return (
     <Card
       style={{ padding: "10px" }}
       actions={[
         <div key="twit">
-          짹짹 <br /> {dummy.Post.length}
+          짹짹 <br /> {user.Post.length}
         </div>,
         <div key="twit">
-          팔로잉 <br /> {dummy.Followings.length}
+          팔로잉 <br /> {user.Followings.length}
         </div>,
         <div key="twit">
-          팔로워 <br /> {dummy.Followers.length}
+          팔로워 <br /> {user.Followers.length}
         </div>
       ]}
     >
       <Card.Meta
-        avatar={<Avatar>{dummy.nickname[0]}</Avatar>}
-        title={dummy.nickname}
+        avatar={<Avatar>{user.nickname[0]}</Avatar>}
+        title={user.nickname}
       />
+      <Button onClick={onLogout}>로그아웃</Button>
     </Card>
   );
 };
-
-UserProfile.propTypes = {
-  dummy : Proptype.object
-};
-
 
 export default UserProfile;

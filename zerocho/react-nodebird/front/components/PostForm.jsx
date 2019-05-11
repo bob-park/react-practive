@@ -1,11 +1,12 @@
 import React from "react";
+
+import { useSelector } from "react-redux";
+
 import { Form, Button, Input } from "antd";
 
-const dummy = {
-  imagePaths: []
-};
-
 const PostForm = () => {
+  const { imagePaths } = useSelector(state => state.post, []);
+
   return (
     <Form encType="multipart/form-data" style={{ margin: "10px 0 20px" }}>
       <Input.TextArea
@@ -20,7 +21,7 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {dummy.imagePaths.map((v) => (
+        {imagePaths.map(v => (
           <div key={v} style={{ display: "inline-block" }}>
             <img
               src={"http://localhost:3065/" + v}
