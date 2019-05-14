@@ -1,32 +1,32 @@
-import React, { useCallback } from "react";
+import React, { useCallback } from 'react';
 
-import { useDispatch, useSelector } from "react-redux";
-import { loginAction } from "../reducers/user";
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Form, Input } from "antd";
-import Link from "next/link";
+import { Button, Form, Input } from 'antd';
+import Link from 'next/link';
+import { LOG_IN_REQUEST } from '../reducers/user';
 
-import { useInput } from "../pages/signup";
+import { useInput } from '../pages/signup';
 
 const LoginForm = () => {
-  const [userId, onChangeId] = useInput("");
-  const [userPassword, onChangePassword] = useInput("");
+  const [id, onChangeId] = useInput('');
+  const [password, onChangePassword] = useInput('');
 
-  const { isLoggedInPending } = useSelector(state => state.user, []);
+  const { isLoggingIn } = useSelector(state => state.user, []);
 
   const dispatch = useDispatch();
   const onSubmitForm = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
 
-      dispatch(
-        loginAction({
-          userId,
-          userPassword
-        })
-      );
+      dispatch({
+        type: LOG_IN_REQUEST,
+        data: {
+          id, password,
+        },
+      });
     },
-    [userId, userPassword]
+    [id, password],
   );
 
   return (
@@ -34,7 +34,7 @@ const LoginForm = () => {
       <div>
         <label htmlFor="user-id">아이디</label>
         <br />
-        <Input name="user-id" value={userId} onChange={onChangeId} required />
+        <Input name="user-id" value={id} onChange={onChangeId} required />
       </div>
       <div>
         <label htmlFor="user-password">패스워드</label>
@@ -42,19 +42,17 @@ const LoginForm = () => {
         <Input
           name="user-password"
           type="password"
-          value={userPassword}
+          value={password}
           onChange={onChangePassword}
           required
         />
       </div>
-      <div style={{ marginTop: "10px" }}>
-        <Button type="primary" htmlType="submit" loading={isLoggedInPending}>
-            { isLoggedInPending ? "로그인 중" : "로그인"}
+      <div style={{ marginTop: '10px' }}>
+        <Button type="primary" htmlType="submit" loading={isLoggingIn}>
+          { isLoggingIn ? '로그인 중' : '로그인'}
         </Button>
         <Link href="/signup">
-          <a>
-            <Button>회원가입</Button>
-          </a>
+          <Button>회원가입</Button>
         </Link>
       </div>
     </Form>

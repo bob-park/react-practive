@@ -1,13 +1,17 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from 'react';
 
-import { useDispatch } from "react-redux";
-import { singUpAction } from "../reducers/user";
+import { useSelector, useDispatch } from 'react-redux';
 
-import { Form, Input, Checkbox, Button } from "antd";
+import Router from 'next/router';
+
+import {
+  Form, Input, Checkbox, Button,
+} from 'antd';
+import { singUpRequestAction } from '../reducers/user';
 
 export const useInput = (initValue = null) => {
   const [value, setter] = useState(initValue);
-  const handler = useCallback(e => {
+  const handler = useCallback((e) => {
     const { value } = e.target;
 
     setter(value);
@@ -17,22 +21,29 @@ export const useInput = (initValue = null) => {
 
 const SignUp = () => {
   // Custom Hooks
-  const [id, onChangeId] = useInput("");
-  const [nick, onChangeNick] = useInput("");
-  const [password, onChangePassword] = useInput("");
+  const [id, onChangeId] = useInput('');
+  const [nick, onChangeNick] = useInput('');
+  const [password, onChangePassword] = useInput('');
 
-  // const [id, setId] = useState("");
-  //const [nick, setNick] = useState("");
-  //const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState('');
   const [term, setTerm] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [termError, setTermError] = useState(false);
 
+  const { isSigningUp, me } = useSelector(state => state.user, []);
+
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (me) {
+      // eslint-disable-next-line no-alert
+      alert('로그인 했으니 메인페이지로 이동합니다.');
+      Router.push('/');
+    }
+  }, [me && me.id]);
+
   const onSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
 
       if (password !== passwordCheck) {
@@ -44,41 +55,29 @@ const SignUp = () => {
       }
 
       dispatch(
-        singUpAction({
+        singUpRequestAction({
           id,
           nick,
-          password
-        })
+          password,
+        }),
       );
     },
-    [password, passwordCheck, term]
+    [password, passwordCheck, term],
   );
 
-  // const onChangeId = e => {
-  //   setId(e.target.value);
-  // };
-
-  // const onChangeNick = e => {
-  //   setNick(e.target.value);
-  // };
-
-  // const onChangePassword = e => {
-  //   setPassword(e.target.value);
-  // };
-
   const onChangePasswordCheck = useCallback(
-    e => {
+    (e) => {
       setPasswordError(e.target.value !== password);
       setPasswordCheck(e.target.value);
     },
-    [password, passwordCheck]
+    [password, passwordCheck],
   );
 
   const onChangeTerm = useCallback(
-    e => {
+    (e) => {
       setTerm(e.target.checked);
     },
-    [term]
+    [term],
   );
 
   return (
@@ -121,7 +120,7 @@ const SignUp = () => {
             onChange={onChangePasswordCheck}
           />
           {passwordError && (
-            <div style={{ color: "red" }}>비밀번호가 일치하지 않습니다.</div>
+            <div style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</div>
           )}
         </div>
         <div>
@@ -129,12 +128,12 @@ const SignUp = () => {
             제로초 말을 잘 들을 것을 동의합니다.
           </Checkbox>
           {termError && (
-            <div style={{ color: "red" }}>약관에 동의하셔야 합니다.</div>
+            <div style={{ color: 'red' }}>약관에 동의하셔야 합니다.</div>
           )}
         </div>
         <div>
-          <Button type="primary" htmlType="submit">
-            가입하기
+          <Button type="primary" htmlType="submit" loading={isSigningUp}>
+            {isSigningUp ? '가입 중' : '가입하기'}
           </Button>
         </div>
       </Form>

@@ -1,31 +1,62 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from 'react';
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from 'react-redux';
 
-import { Form, Button, Input } from "antd";
+import { Form, Button, Input } from 'antd';
+import { ADD_POST_REQUEST } from '../reducers/post';
 
 const PostForm = () => {
-  const { imagePaths } = useSelector(state => state.post, []);
+  const [text, setText] = useState('');
+  const [imagePath, setImagePath] = useState('');
+
+  const { imagePaths, isAddingPost, postAdded } = useSelector(state => state.post, []);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setText('');
+  }, [postAdded === true]);
+
+  const onSubmitForm = useCallback((e) => {
+    e.preventDefault();
+
+    dispatch({
+      type: ADD_POST_REQUEST,
+      data: {
+        text, imagePath,
+      },
+    });
+  }, []);
+
+  const onChangeText = useCallback((e) => {
+    setText(e.target.value);
+  }, []);
+
+  const onChangeImagePath = useCallback((e) => {
+    setImagePath(e.target.value);
+  }, []);
 
   return (
-    <Form encType="multipart/form-data" style={{ margin: "10px 0 20px" }}>
+    <Form encType="multipart/form-data" style={{ margin: '10px 0 20px' }} onSubmit={onSubmitForm}>
       <Input.TextArea
         maxLength={140}
         placeholder="어떤 신기한 일이 있었나요?"
+        onChange={onChangeText}
+        value={text}
       />
       <div>
-        <input type="file" multiple hidden />
+        <input type="file" multiple hidden onChange={onChangeImagePath} value={imagePath} />
         <Button>이미지 업로드</Button>
-        <Button type="primary" style={{ float: "right" }} htmlType="submit">
-          짹짹
+        <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={isAddingPost}>
+          {isAddingPost ? '게시 중' : '게시'}
         </Button>
       </div>
       <div>
         {imagePaths.map(v => (
-          <div key={v} style={{ display: "inline-block" }}>
+          <div key={v} style={{ display: 'inline-block' }}>
             <img
-              src={"http://localhost:3065/" + v}
-              style={{ width: "200px" }}
+              src={`http://localhost:3065/${v}`}
+              style={{ width: '200px' }}
               alt={v}
             />
             <div>

@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
 
-import { loginAction } from "../reducers/user";
 
-import PostForm from "../components/PostForm";
-import PostCard from "../components/PostCard";
+import PostForm from '../components/PostForm';
+import PostCard from '../components/PostCard';
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector(state => state.user, []);
+  const { isLoggedIn } = useSelector(state => state.user, []);
   const { mainPosts } = useSelector(state => state.post, []);
 
 
@@ -20,9 +18,7 @@ const Home = () => {
   return (
     <div>
       {isLoggedIn && <PostForm />}
-      {mainPosts.map(c => {
-        return <PostCard key={+c.createdAt} post={c} />;
-      })}
+      { mainPosts && mainPosts.map(c => <PostCard key={+c.id} post={c} />)}
     </div>
   );
 };
