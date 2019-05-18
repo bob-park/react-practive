@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull : false,
     }
   }, {
-    charset : "utf8",
-    collate : "utf8-_general_ci" // 한글 저장
+    charset : "utf8", // 한글 + 이모티콘
+    collate : "utf8_general_ci" // 한글 저장
   });
 
   // 테이블간의 관계 정의
