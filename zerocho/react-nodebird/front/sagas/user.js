@@ -1,7 +1,13 @@
 import axios from 'axios';
 
 import {
-  all, fork, put, call, takeLatest, takeEvery, delay,
+  all,
+  fork,
+  put,
+  call,
+  takeLatest,
+  takeEvery,
+  delay,
 } from 'redux-saga/effects';
 
 import {
@@ -16,21 +22,25 @@ import {
   LOG_OUT_FAILURE,
 } from '../reducers/user';
 
-function loginAPI() {
+axios.defaults.baseURL = 'http://localhost:3065/api';
+
+function loginAPI(loginData) {
   // LOG_IN API 요청
-  // return axios.get('/login');
+  return axios.post('/user/login', loginData, {
+    withCredentials: true,
+  });
 }
 
-function* login() {
+function* login(action) {
   try {
     // loginAPI() 함수 호출
-    // yield call(loginAPI);
-    yield delay(2000);
+    const result = yield call(loginAPI, action.data);
 
     // dispatch 와 같은 역할
     yield delay(1000);
     yield put({
       type: LOG_IN_SUCCESS,
+      data: result.data,
     });
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -48,13 +58,12 @@ function* watchLogin() {
 }
 
 function logoutAPI() {
-  return axios.get('/logout');
+  return axios.post('/user/logout');
 }
 
 function* logout() {
   try {
-    // yield call(logoutAPI);
-    yield delay(2000);
+    yield call(logoutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
@@ -71,14 +80,15 @@ function* watchLogout() {
   yield takeEvery(LOG_OUT_REQUEST, logout);
 }
 
-function signUpAPI() {
-  return axios.post('/signup');
+function signUpAPI(signUpData) {
+  return axios.post('/user', signUpData);
+  //return axios.post("/api/user", signUpData);
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
-    //yield call(signUpAPI);
-    yield delay(2000);
+    // call (함수, 함수의 파라미터)
+    yield call(signUpAPI, action.data);
     yield put({
       type: SIGN_UP_SUCCESS,
     });

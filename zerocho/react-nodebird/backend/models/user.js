@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 
   // 테이블간의 관계 정의
   User.associate = (db) => {
-    db.User.hasMany(db.Post, {as : "Posst"}); // 관계가 중복될 경우 이름을 정해주어야 한다.
+    db.User.hasMany(db.Post, { as: "Posts" }); // 관계가 중복될 경우 이름을 정해주어야 한다.
     db.User.hasMany(db.Comment);
 
     db.User.belongsToMany(db.Post, { through : "Like", as : "Liked" });

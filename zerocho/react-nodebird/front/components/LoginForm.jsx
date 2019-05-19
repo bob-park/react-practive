@@ -9,7 +9,7 @@ import { LOG_IN_REQUEST } from '../reducers/user';
 import { useInput } from '../pages/signup';
 
 const LoginForm = () => {
-  const [id, onChangeId] = useInput('');
+  const [userId, onChangeUserId] = useInput('');
   const [password, onChangePassword] = useInput('');
 
   const { isLoggingIn } = useSelector(state => state.user, []);
@@ -22,11 +22,11 @@ const LoginForm = () => {
       dispatch({
         type: LOG_IN_REQUEST,
         data: {
-          id, password,
+          userId, password,
         },
       });
     },
-    [id, password],
+    [userId, password],
   );
 
   return (
@@ -34,7 +34,7 @@ const LoginForm = () => {
       <div>
         <label htmlFor="user-id">아이디</label>
         <br />
-        <Input name="user-id" value={id} onChange={onChangeId} required />
+        <Input name="user-id" value={userId} onChange={onChangeUserId} required />
       </div>
       <div>
         <label htmlFor="user-password">패스워드</label>

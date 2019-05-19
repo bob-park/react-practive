@@ -22,7 +22,7 @@ export const useInput = (initValue = null) => {
 const SignUp = () => {
   // Custom Hooks
   const [id, onChangeId] = useInput('');
-  const [nick, onChangeNick] = useInput('');
+  const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
 
   const [passwordCheck, setPasswordCheck] = useState('');
@@ -57,12 +57,12 @@ const SignUp = () => {
       dispatch(
         singUpRequestAction({
           id,
-          nick,
+          nickname,
           password,
         }),
       );
-    },
-    [password, passwordCheck, term],
+    }
+    , [id, nickname, password, passwordCheck, term],
   );
 
   const onChangePasswordCheck = useCallback(
@@ -94,8 +94,8 @@ const SignUp = () => {
           <Input
             name="user-nick"
             required
-            value={nick}
-            onChange={onChangeNick}
+            value={nickname}
+            onChange={onChangeNickname}
           />
         </div>
         <div>
