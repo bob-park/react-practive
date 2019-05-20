@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     db.User.hasMany(db.Comment);
 
     db.User.belongsToMany(db.Post, { through : "Like", as : "Liked" });
-    db.User.belongsToMany(db.User, { through : "Follow", as : "Followers" });
-    db.User.belongsToMany(db.User, { through : "Follow", as : "Followings" });
+    db.User.belongsToMany(db.User, { through : "Follow", as : "Followers", foreignKey : "followingId" }); // through 는 같은 테이블을 참조할 경우, foreignkey 를 지정해줘야 한다.
+    db.User.belongsToMany(db.User, { through : "Follow", as : "Followings", foreignKey : "followerId" });
   };
 
   return User;

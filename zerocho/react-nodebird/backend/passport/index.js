@@ -23,7 +23,7 @@ module.exports = () => {
         where: { id },
         include : [{
           model : db.Post,
-          as : "Post",
+          as : "Posts",
           attributes : ["id"], // 가져올 DB 의 column 를 의미
         }, {
           model : db.User,

@@ -12,7 +12,18 @@ const passport = require("passport");
 
 // User
 // 내 정보 조회
-router.get("/", (req, res) => {});
+router.get("/", (req, res) => {
+
+  if(!req.user){
+    return res.status(401).send("로그인이 필요합니다.");
+  }
+
+  const user = Object.assign({}, req.user.toJSON());
+
+  delete user.password;
+
+  return res.json(req.user);
+});
 
 // 남의 정보 조회
 router.get("/:id", (req, res) => {});
@@ -93,7 +104,7 @@ router.post("/login", (req, res, next) => {
               attributes : ["id"]
             },
           ],
-          attributes : ["id", "nickname", "userId"]
+          attributes : ["id", "nickname", "userId"], // attribute 로 필터링
         });
 
         // Object copy

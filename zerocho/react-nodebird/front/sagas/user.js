@@ -19,7 +19,7 @@ import {
   SIGN_UP_FAILURE,
   LOG_OUT_REQUEST,
   LOG_OUT_SUCCESS,
-  LOG_OUT_FAILURE,
+  LOG_OUT_FAILURE, LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE,
 } from '../reducers/user';
 
 axios.defaults.baseURL = 'http://localhost:3065/api';
@@ -58,7 +58,13 @@ function* watchLogin() {
 }
 
 function logoutAPI() {
-  return axios.post('/user/logout');
+  return axios.post(
+    '/user/logout',
+    {},
+    {
+      withCredentials: true,
+    },
+  );
 }
 
 function* logout() {
@@ -106,6 +112,38 @@ function* watchSignUp() {
   yield takeEvery(SIGN_UP_REQUEST, signUp);
 }
 
+function loadUserAPI(signUpData) {
+  return axios.get('/user/', {
+    withCredentials: true,
+  });
+}
+
+function* loadUser() {
+  try {
+    const result = yield call(loadUserAPI);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data : result.data
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    yield put({
+      type: LOAD_USER_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadUser() {
+  yield takeEvery(LOAD_USER_REQUEST, loadUser);
+}
+
 export default function* userSaga() {
-  yield all([fork(watchLogin), fork(watchLogout), fork(watchSignUp)]);
+  yield all([
+    fork(watchLogin),
+    fork(watchLogout),
+    fork(watchSignUp),
+    fork(watchLoadUser),
+  ]);
 }
