@@ -13,7 +13,7 @@ import UserProfile from './UserProfile';
 import { LOAD_USER_REQUEST } from '../reducers/user';
 
 const AppLayout = ({ children }) => {
-  const { me, isLoggedIn } = useSelector(state => state.user, []);
+  const { me } = useSelector(state => state.user, []);
 
   const dispatch = useDispatch();
 

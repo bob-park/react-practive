@@ -20,7 +20,7 @@ const UserProfile = () => {
       style={{ padding: '10px' }}
       actions={[
         <div key="twit">
-          짹짹
+          게시글
           <br />
           {me.Posts.length}
         </div>,

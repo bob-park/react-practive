@@ -9,6 +9,7 @@ const PostForm = () => {
   const [text, setText] = useState('');
   const [imagePath, setImagePath] = useState('');
 
+  const { me } = useSelector(state => state.user, []);
   const { imagePaths, isAddingPost, postAdded } = useSelector(state => state.post, []);
 
   const dispatch = useDispatch();
@@ -20,13 +21,17 @@ const PostForm = () => {
   const onSubmitForm = useCallback((e) => {
     e.preventDefault();
 
+    if(!text || !text.trim()) {
+      return alert("게시글을 작성하세요.");
+    }
+
     dispatch({
       type: ADD_POST_REQUEST,
       data: {
-        text, imagePath,
+        content : text,
       },
     });
-  }, []);
+  }, [text]);
 
   const onChangeText = useCallback((e) => {
     setText(e.target.value);

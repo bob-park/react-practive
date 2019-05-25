@@ -1,37 +1,5 @@
-const dummyPost = {
-  User: {
-    id: 1,
-    nickname: '현우박',
-  },
-  id: 2,
-  content: '두번째 게시글',
-  comments: [],
-  createAt: new Date(),
-  img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-};
-
-const dummyComment = {
-  id: 1,
-  User: {
-    id: 1,
-    nickname: '현우박',
-  },
-  createAt: new Date(),
-  content: '더미 댓댓글입니다.',
-};
-
 export const initialState = {
-  mainPosts: [{
-    User: {
-      id: 1,
-      nickname: '현우박',
-    },
-    id: 1,
-    content: '첫번째 게시글',
-    comments: [],
-    createAt: new Date(),
-    img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-  }], // 화면에 보일 포스트들
+  mainPosts: [], // 화면에 보일 포스트들
   imagePaths: [], // 미리보기 이미지 경로
   addPostErrorReason: false, // 포스트 업로드 실패 사유,
   isAddingPost: false, // 포스트 업로드 중,
@@ -99,7 +67,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         // mainPosts: [action.data, ...state.mainPosts],
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [action.data, ...state.mainPosts],
         isAddingPost: false,
         addPostErrorReason: '',
         postAdded: true,
@@ -112,6 +80,22 @@ const reducer = (state = initialState, action) => {
         addPostErrorReason: action.error,
       };
 
+    case LOAD_MAIN_POSTS_REQUEST:
+      return {
+        ...state,
+        mainPosts : []
+      };
+    case LOAD_MAIN_POSTS_SUCCESS:
+      return {
+        ...state,
+        mainPosts: action.data,
+      };
+
+    case LOAD_MAIN_POSTS_FAILURE:
+      return {
+        ...state,
+      };
+
     case ADD_COMMENT_REQUEST:
       return {
         ...state,
@@ -121,7 +105,7 @@ const reducer = (state = initialState, action) => {
     case ADD_COMMENT_SUCCESS: {
       const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
       const post = state.mainPosts[postIndex];
-      const comments = [...post.comments, dummyComment];
+      const comments = action.data;
       const mainPosts = [...state.mainPosts];
       mainPosts[postIndex] = {
         ...post,
