@@ -28,6 +28,7 @@ const app = express();
 const userAPIRouter = require("./routes/user");
 const postAPIRouter = require("./routes/post");
 const postsAPIRouter = require("./routes/posts");
+const hashtagAPIRouter = require("./routes/hashtag");
 
 // DB
 db.sequelize.sync();
@@ -69,6 +70,7 @@ app.use(passport.session());
 app.use("/api/user", userAPIRouter);
 app.use("/api/post", postAPIRouter);
 app.use("/api/posts", postsAPIRouter);
+app.use("/api/hashtag", hashtagAPIRouter);
 
 // 서버가 실행시 포트 설정
 app.listen(3065, () => {

@@ -81,17 +81,23 @@ const reducer = (state = initialState, action) => {
       };
 
     case LOAD_MAIN_POSTS_REQUEST:
+    case LOAD_HASHTAG_POSTS_REQUEST:
+    case LOAD_USER_POSTS_REQUEST:
       return {
         ...state,
-        mainPosts : []
+        mainPosts: [],
       };
     case LOAD_MAIN_POSTS_SUCCESS:
+    case LOAD_HASHTAG_POSTS_SUCCESS:
+    case LOAD_USER_POSTS_SUCCESS:
       return {
         ...state,
         mainPosts: action.data,
       };
 
     case LOAD_MAIN_POSTS_FAILURE:
+    case LOAD_HASHTAG_POSTS_FAILURE:
+    case LOAD_USER_POSTS_FAILURE:
       return {
         ...state,
       };
@@ -103,13 +109,15 @@ const reducer = (state = initialState, action) => {
         commentAdded: false,
       };
     case ADD_COMMENT_SUCCESS: {
-      const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
+      const postIndex = state.mainPosts.findIndex(
+        v => v.id === action.data.postId,
+      );
       const post = state.mainPosts[postIndex];
-      const comments = action.data;
+      const Comments = [...post.Comments, action.data.comment];
       const mainPosts = [...state.mainPosts];
       mainPosts[postIndex] = {
         ...post,
-        comments,
+        Comments,
       };
 
       return {
@@ -121,13 +129,33 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-
     case ADD_COMMENT_FAILURE:
       return {
         ...state,
         isAddingComment: false,
         addCommentErrorReason: action.error,
       };
+
+    case LOAD_COMMENT_REQUEST:
+      return state;
+
+    case LOAD_COMMENT_SUCCESS: {
+      const postIndex = state.mainPosts.findIndex(
+        v => v.id === action.data.postId,
+      );
+      const post = state.mainPosts[postIndex];
+      const Comments = action.data.comments;
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = { ...post, Comments };
+
+      return {
+        ...state,
+        mainPosts,
+      };
+    }
+
+    case LOAD_COMMENT_FAILURE:
+      return state;
 
     default:
       return state;

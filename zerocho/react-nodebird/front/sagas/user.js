@@ -113,18 +113,19 @@ function* watchSignUp() {
   yield takeEvery(SIGN_UP_REQUEST, signUp);
 }
 
-function loadUserAPI(signUpData) {
-  return axios.get('/user/', {
+function loadUserAPI(userId) {
+  return axios.get(  userId ? `/user/${userId}` : '/user', {
     withCredentials: true,
   });
 }
 
-function* loadUser() {
+function* loadUser(action) {
   try {
-    const result = yield call(loadUserAPI);
+    const result = yield call(loadUserAPI, action.data);
     yield put({
       type: LOAD_USER_SUCCESS,
       data: result.data,
+      me : !action.data
     });
   } catch (e) {
     // eslint-disable-next-line no-console
