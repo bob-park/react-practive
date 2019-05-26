@@ -28,7 +28,12 @@ import {
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
   UNLIKE_POST_FAILURE,
+  RETWEET_REQUEST,
+  RETWEET_SUCCESS,
+  RETWEET_FAILURE,
 } from '../reducers/post';
+
+import { ADD_POST_TO_ME } from '../reducers/user';
 
 function addPostAPI(postData) {
   return axios.post('/post', postData, {
@@ -39,9 +44,13 @@ function addPostAPI(postData) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
-    yield put({
+    yield put({ // post 리듀서의 데이터 수정
       type: ADD_POST_SUCCESS,
       data: result.data,
+    });
+    yield put({ // user 리듀서의 데이터 수정
+      type: ADD_POST_TO_ME,
+      data: result.data.id,
     });
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -222,9 +231,13 @@ function* watchUploadImages() {
 }
 
 function likePostAPI(postId) {
-  return axios.post(`/post/${postId}/like`, {},{
-    withCredentials: true,
-  });
+  return axios.post(
+    `/post/${postId}/like`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
 }
 
 function* likePost(action) {
@@ -252,12 +265,9 @@ function* watchLikePost() {
 }
 
 function unLikePostAPI(postId) {
-  return axios.delete(
-    `/post/${postId}/like`,
-    {
-      withCredentials: true,
-    },
-  );
+  return axios.delete(`/post/${postId}/like`, {
+    withCredentials: true,
+  });
 }
 
 function* unLikePost(action) {
@@ -284,6 +294,38 @@ function* watchUnLikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unLikePost);
 }
 
+function retweetAPI(postId) {
+  return axios.post(
+    `/post/${postId}/retweet`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+function* retweet(action) {
+  try {
+    const result = yield call(retweetAPI, action.data);
+    yield put({
+      type: RETWEET_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    yield put({
+      type: RETWEET_FAILURE,
+      error: e,
+    });
+    alert(e.response && e.response.data);
+  }
+}
+
+function* watchRetweet() {
+  yield takeLatest(RETWEET_REQUEST, retweet);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchMainPosts),
@@ -295,5 +337,6 @@ export default function* postSaga() {
     fork(watchUploadImages),
     fork(watchLikePost),
     fork(watchUnLikePost),
+    fork(watchRetweet),
   ]);
 }

@@ -66,7 +66,6 @@ const reducer = (state = initialState, action) => {
     case ADD_POST_SUCCESS:
       return {
         ...state,
-        // mainPosts: [action.data, ...state.mainPosts],
         mainPosts: [action.data, ...state.mainPosts],
         imagePaths: [],
         isAddingPost: false,
@@ -214,6 +213,19 @@ const reducer = (state = initialState, action) => {
     }
 
     case UNLIKE_POST_FAILURE:
+      return state;
+
+    case RETWEET_REQUEST:
+      return state;
+
+    case RETWEET_SUCCESS: {
+      return {
+        ...state,
+        mainPosts: [action.data, ...state.mainPosts],
+      };
+    }
+
+    case RETWEET_FAILURE:
       return state;
 
     default:
