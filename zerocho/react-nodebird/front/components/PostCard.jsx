@@ -5,8 +5,25 @@ import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 
 import PropTypes from 'prop-types';
-import { Avatar, Button, Card, Icon, Form, Comment, List, Input } from 'antd';
-import { ADD_COMMENT_REQUEST, LOAD_COMMENT_REQUEST } from '../reducers/post';
+import {
+  Avatar,
+  Button,
+  Card,
+  Icon,
+  Form,
+  Comment,
+  List,
+  Input,
+  Popover,
+} from 'antd';
+import {
+  ADD_COMMENT_REQUEST,
+  LIKE_POST_REQUEST,
+  LOAD_COMMENT_REQUEST,
+  UNLIKE_POST_REQUEST,
+} from '../reducers/post';
+
+import PostImages from './PostImages';
 
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -21,6 +38,8 @@ const PostCard = ({ post }) => {
 
   const dispatch = useDispatch();
 
+  const liked = me && post.Likers && post.Likers.find(v => v.id === me.id);
+
   useEffect(() => {
     setCommentText('');
   }, [commentAdded === true]);
@@ -28,15 +47,14 @@ const PostCard = ({ post }) => {
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
 
-    if(!commentFormOpened){
+    if (!commentFormOpened) {
       dispatch({
-        type : LOAD_COMMENT_REQUEST,
-        data : {
-          postId : post.id
-        }
-      })
+        type: LOAD_COMMENT_REQUEST,
+        data: {
+          postId: post.id,
+        },
+      });
     }
-
   }, []);
 
   const onSubmitComment = useCallback(
@@ -63,16 +81,60 @@ const PostCard = ({ post }) => {
     setCommentText(e.target.value);
   }, []);
 
+  const onToggleLike = useCallback(() => {
+    if (!me) {
+      return alert('로그인이 필요합니다.');
+    }
+
+    if (liked) {
+      // 좋아요 누른상태
+      dispatch({
+        type: UNLIKE_POST_REQUEST,
+        data: post.id,
+      });
+    } else {
+      // 좋아요 누르지 않은 상태
+      dispatch({
+        type: LIKE_POST_REQUEST,
+        data: post.id,
+      });
+    }
+  }, [me && me.id, post && post.id, liked]);
+
   return (
     <div>
       <Card
         key={+post.createAt}
-        cover={post.img && <img alt="example" src={post.img} />}
+        cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
           <Icon type="retweet" key="retweet" />,
-          <Icon type="heart" key="heart" />,
+          <Icon
+            type="heart"
+            key="heart"
+            onClick={onToggleLike}
+            theme={liked ? 'twoTone' : 'outlined'}
+            twoToneColor="#eb2f96"
+          />,
           <Icon type="message" key="message" onClick={onToggleComment} />,
-          <Icon type="ellipsis" key="ellipsis" />,
+          <Popover
+            key="ellipsis"
+            content={
+              <Button.Group>
+                {me && me.id === post.UserId ? (
+                  <>
+                    <Button>수정</Button>
+                    <Button type="danger">삭제</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button>신고</Button>
+                  </>
+                )}
+              </Button.Group>
+            }
+          >
+            <Icon type="ellipsis" />
+          </Popover>,
         ]}
         extra={<Button>팔로우</Button>}
       >

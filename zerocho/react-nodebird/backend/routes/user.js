@@ -15,7 +15,6 @@ const passport = require("passport");
 // User
 // 내 정보 조회
 router.get("/", isLoggedIn, (req, res) => {
-
   const user = Object.assign({}, req.user.toJSON());
 
   delete user.password;
@@ -101,8 +100,6 @@ router.post("/", async (req, res, next) => {
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log(err, user, info);
-
     if (err) {
       console.error(err);
       return next(err);
@@ -180,6 +177,9 @@ router.get("/:id/posts", async (req, res, next) => {
         {
           model: db.User,
           attributes: ["id", "nickname"]
+        },
+        {
+          model: db.Image
         }
       ]
     });

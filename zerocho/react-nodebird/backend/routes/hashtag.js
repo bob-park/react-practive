@@ -9,14 +9,18 @@ router.get("/:tag", async (req, res, next) => {
       include: [
         {
           model: db.Hashtag,
-          as : "Posthashtags",
-          where: { name: decodeURIComponent(req.params.tag) }, // 한글이 uri로 인코딩 되기 때문에 디코딩 해준다.
-        }, {
+          as: "Posthashtags",
+          where: { name: decodeURIComponent(req.params.tag) } // 한글이 uri로 인코딩 되기 때문에 디코딩 해준다.
+        },
+        {
           model: db.User,
           attributes: ["id", "nickname"]
+        },
+        {
+          model: db.Image
         }
       ],
-      order : [["createdAt", "DESC"]]
+      order: [["createdAt", "DESC"]]
     });
 
     res.json(posts);

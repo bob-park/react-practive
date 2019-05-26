@@ -18,7 +18,6 @@ const dotenv = require("dotenv");
 const passport = require("passport");
 const passportConfig = require("./passport");
 
-
 dotenv.config();
 
 const db = require("./models");
@@ -39,10 +38,13 @@ app.use(morgan("dev"));
 
 app.use(express.json()); // json 처리
 app.use(express.urlencoded({ extends: true })); // form 처리
-app.use(cors({
-  origin : true,
-  credentials : true
-}));
+app.use("/", express.static("uploads")); // static 미들웨어
+app.use(
+  cors({
+    origin: true,
+    credentials: true
+  })
+);
 app.use(cookieParser(process.env.COOKIE_SECRET)); // cookie 암호화
 app.use(
   expressSession({
@@ -53,7 +55,7 @@ app.use(
       httpOnly: true,
       secure: false // https 쓸때 true
     },
-    name : "rnbck",
+    name: "rnbck" // 쿠기 이름
   })
 );
 // 주의점
@@ -63,7 +65,6 @@ app.use(
 // 모든 라우터에 해당 비지니스 로직 적용
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Rest API
 // controller
