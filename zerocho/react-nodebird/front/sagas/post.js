@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { all, call, put, delay, fork, takeLatest } from 'redux-saga/effects';
+import { all, call, put, fork, takeLatest, throttle } from 'redux-saga/effects';
 import {
   ADD_COMMENT_FAILURE,
   ADD_COMMENT_REQUEST,
@@ -71,13 +71,13 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
-function mainPostsAPI() {
-  return axios.get('/posts');
+function mainPostsAPI(lastId = 0, limit = 10) {
+  return axios.get(`/posts?lastId=${lastId}&limit=${limit}`);
 }
 
-function* mainPosts() {
+function* mainPosts(action) {
   try {
-    const result = yield call(mainPostsAPI);
+    const result = yield call(mainPostsAPI, action.lastId);
     yield put({
       type: LOAD_MAIN_POSTS_SUCCESS,
       data: result.data,
@@ -93,7 +93,7 @@ function* mainPosts() {
 }
 
 function* watchMainPosts() {
-  yield takeLatest(LOAD_MAIN_POSTS_REQUEST, mainPosts);
+  yield throttle(2000, LOAD_MAIN_POSTS_REQUEST, mainPosts); // 중간에 같은 호출을 막아주는 역할을 함
 }
 
 function loadCommentsAPI(data) {
@@ -158,8 +158,10 @@ function* watchAddPComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
-function loadHashtagPostsAPI(tag) {
-  return axios.get(`/hashtag/${encodeURIComponent(tag)}`);
+function loadHashtagPostsAPI(tag, lastId) {
+  return axios.get(
+    `/hashtag/${encodeURIComponent(tag)}?lastId=${lastId}&limit=10`,
+  );
 }
 
 function* loadHashtagPosts(action) {
