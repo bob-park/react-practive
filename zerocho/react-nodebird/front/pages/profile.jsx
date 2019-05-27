@@ -24,23 +24,23 @@ const Profile = () => {
   );
   const { mainPosts } = useSelector(state => state.post, []);
 
-  useEffect(() => {
-    if (me) {
-      dispatch({
-        type: LOAD_FOLLOWERS_REQUEST,
-        data: me.id,
-      });
-      dispatch({
-        type: LOAD_FOLLOWINGS_REQUEST,
-        data: me.id,
-      });
-      dispatch({
-        type: LOAD_USER_POSTS_REQUEST,
-        data: me.id,
-      });
-    } else {
-    }
-  }, [me && me.id]);
+  // useEffect(() => {
+  //   if (me) {
+  //     dispatch({
+  //       type: LOAD_FOLLOWERS_REQUEST,
+  //       data: me.id,
+  //     });
+  //     dispatch({
+  //       type: LOAD_FOLLOWINGS_REQUEST,
+  //       data: me.id,
+  //     });
+  //     dispatch({
+  //       type: LOAD_USER_POSTS_REQUEST,
+  //       data: me.id,
+  //     });
+  //   } else {
+  //   }
+  // }, [me && me.id]);
 
   const onUnFollow = useCallback(
     userId => () => {
@@ -116,6 +116,25 @@ const Profile = () => {
       </div>
     </div>
   );
+};
+
+Profile.getInitialProps = (context) => {
+
+  const state = context.store.getState();
+
+  context.store.dispatch({
+    type: LOAD_FOLLOWERS_REQUEST,
+    data: state.user.me && state.user.me.id
+  });
+  context.store.dispatch({
+    type: LOAD_FOLLOWINGS_REQUEST,
+    data: state.user.me && state.user.me.id
+  });
+  context.store.dispatch({
+    type: LOAD_USER_POSTS_REQUEST,
+    data: state.user.me && state.user.me.id
+  });
+
 };
 
 export default Profile;

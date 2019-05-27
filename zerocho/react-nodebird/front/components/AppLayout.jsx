@@ -20,9 +20,9 @@ const AppLayout = ({ children }) => {
   useEffect(() => {
 
     if(!me){
-      dispatch({
-        type : LOAD_USER_REQUEST
-      });
+      // dispatch({
+      //   type : LOAD_USER_REQUEST
+      // });
     }
 
   }, []);
@@ -62,5 +62,7 @@ const AppLayout = ({ children }) => {
 AppLayout.propTypes = {
   children: PropTypes.node,
 };
+
+
 
 export default AppLayout;

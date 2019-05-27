@@ -20,6 +20,7 @@ import {
   ADD_COMMENT_REQUEST,
   LIKE_POST_REQUEST,
   LOAD_COMMENT_REQUEST,
+  REMOVE_POST_REQUEST,
   RETWEET_REQUEST,
   UNLIKE_POST_REQUEST,
 } from '../reducers/post';
@@ -115,19 +116,35 @@ const PostCard = ({ post }) => {
     });
   }, [me && me.id, post.id]);
 
-  const onUnFollow = useCallback(userId => () => {
-    dispatch({
-      type : UNFOLLOW_USER_REQUEST,
-      data : userId
-    })
-  }, [me && me.id]);
+  const onUnFollow = useCallback(
+    userId => () => {
+      dispatch({
+        type: UNFOLLOW_USER_REQUEST,
+        data: userId,
+      });
+    },
+    [me && me.id],
+  );
 
-  const onFollow = useCallback(userId => () => {
-    dispatch({
-      type : FOLLOW_USER_REQUEST,
-      data : userId
-    })
-  }, [me && me.id]);
+  const onFollow = useCallback(
+    userId => () => {
+      dispatch({
+        type: FOLLOW_USER_REQUEST,
+        data: userId,
+      });
+    },
+    [me && me.id],
+  );
+
+  const onRemovePost = useCallback(
+    postId => () => {
+      dispatch({
+        type: REMOVE_POST_REQUEST,
+        data: postId,
+      });
+    },
+    [],
+  );
 
   return (
     <div>
@@ -153,7 +170,9 @@ const PostCard = ({ post }) => {
                 {me && me.id === post.UserId ? (
                   <>
                     <Button>수정</Button>
-                    <Button type="danger">삭제</Button>
+                    <Button type="danger" onClick={onRemovePost(post.id)}>
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <>

@@ -39,7 +39,8 @@ import {
   REMOVE_FOLLOWER_SUCCESS,
   REMOVE_FOLLOWER_FAILURE,
   EDIT_NICKNAME_FAILURE,
-  EDIT_NICKNAME_SUCCESS, EDIT_NICKNAME_REQUEST,
+  EDIT_NICKNAME_SUCCESS,
+  EDIT_NICKNAME_REQUEST,
 } from '../reducers/user';
 
 function loginAPI(loginData) {
@@ -182,7 +183,6 @@ function* follow(action) {
       type: FOLLOW_USER_FAILURE,
       error: e,
     });
-    alert(e.response && e.response.data);
   }
 }
 
@@ -210,7 +210,6 @@ function* unFollow(action) {
       type: UNFOLLOW_USER_FAILURE,
       error: e,
     });
-    alert(e.response && e.response.data);
   }
 }
 
@@ -219,7 +218,7 @@ function* watchUnFollow() {
 }
 
 function loadFollowersAPI(userId) {
-  return axios.get(`/user/${userId}/followers`, {
+  return axios.get(`/user/${userId || 0}/followers`, {
     withCredentials: true,
   });
 }
@@ -238,7 +237,6 @@ function* loadFollowers(action) {
       type: LOAD_FOLLOWERS_FAILURE,
       error: e,
     });
-    alert(e.response && e.response.data);
   }
 }
 
@@ -247,7 +245,7 @@ function* watchLoadFollowers() {
 }
 
 function loadFollowingsAPI(userId) {
-  return axios.get(`/user/${userId}/followings`, {
+  return axios.get(`/user/${userId || 0}/followings`, {
     withCredentials: true,
   });
 }
@@ -266,7 +264,6 @@ function* loadFollowings(action) {
       type: LOAD_FOLLOWINGS_FAILURE,
       error: e,
     });
-    alert(e.response && e.response.data);
   }
 }
 
@@ -294,7 +291,6 @@ function* removeFollower(action) {
       type: REMOVE_FOLLOWER_FAILURE,
       error: e,
     });
-    alert(e.response && e.response.data);
   }
 }
 
@@ -326,7 +322,6 @@ function* editNickname(action) {
       type: EDIT_NICKNAME_FAILURE,
       error: e,
     });
-    alert(e.response && e.response.data);
   }
 }
 

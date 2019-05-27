@@ -9,12 +9,12 @@ const Hashtag = ({ tag }) => {
   const dispatch = useDispatch();
   const { mainPosts } = useSelector(state => state.post, []);
 
-  useEffect(() => {
-    dispatch({
-      type: LOAD_HASHTAG_POSTS_REQUEST,
-      data: tag,
-    });
-  }, []);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: LOAD_HASHTAG_POSTS_REQUEST,
+  //     data: tag,
+  //   });
+  // }, []);
 
   return (
     <div>
@@ -33,8 +33,14 @@ Hashtag.propTypes = {
 // LifeCycle의 일종으로 next에서 추가된 것
 // express 서버에서 받은 param을 받는 메소드
 Hashtag.getInitialProps = async context => {
-  console.log('hashtag getInitialProps : ' + context.query.tag);
-  return { tag: context.query.tag };
+  const { tag } = context.query;
+
+  context.store.dispatch({
+    type: LOAD_HASHTAG_POSTS_REQUEST,
+    data: tag,
+  });
+
+  return { tag };
 };
 
 export default Hashtag;

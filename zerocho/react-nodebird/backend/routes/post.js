@@ -281,4 +281,29 @@ router.post("/:id/retweet", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.delete("/:id", isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await db.Post.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    if (!post) {
+      return res.status(404).send("게시물이 존재하지 않습니다.");
+    }
+
+    await db.Post.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    res.send(req.params.id);
+  } catch (e) {
+    console.error(e);
+    return next(e);
+  }
+});
+
 module.exports = router;

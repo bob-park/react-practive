@@ -80,6 +80,10 @@ const SignUp = () => {
     [term],
   );
 
+  if(me){
+    return null;
+  }
+
   return (
     <>
       <Form onSubmit={onSubmit} style={{ padding: 10 }}>

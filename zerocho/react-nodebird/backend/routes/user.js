@@ -162,7 +162,7 @@ router.get("/:id/followings", isLoggedIn, async (req, res, next) => {
   try {
     const user = await db.User.findOne({
       where: {
-        id: parseInt(req.params.id, 10)
+        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
       }
     });
 
@@ -181,7 +181,7 @@ router.get("/:id/followers", isLoggedIn, async (req, res, next) => {
   try {
     const user = await db.User.findOne({
       where: {
-        id: parseInt(req.params.id, 10)
+        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0
       }
     });
 
@@ -245,13 +245,11 @@ router.delete("/:id/follow", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.delete("/:id/follower", (req, res) => {});
-
 router.get("/:id/posts", async (req, res, next) => {
   try {
     const posts = await db.Post.findAll({
       where: {
-        UserId: parseInt(req.params.id, 10),
+        UserId: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0,
         RetweetId: null
       },
       include: [

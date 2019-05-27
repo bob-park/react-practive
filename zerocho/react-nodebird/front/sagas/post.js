@@ -31,9 +31,12 @@ import {
   RETWEET_REQUEST,
   RETWEET_SUCCESS,
   RETWEET_FAILURE,
+  REMOVE_POST_REQUEST,
+  REMOVE_POST_SUCCESS,
+  REMOVE_POST_FAILURE,
 } from '../reducers/post';
 
-import { ADD_POST_TO_ME } from '../reducers/user';
+import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
 function addPostAPI(postData) {
   return axios.post('/post', postData, {
@@ -44,11 +47,13 @@ function addPostAPI(postData) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
-    yield put({ // post 리듀서의 데이터 수정
+    yield put({
+      // post 리듀서의 데이터 수정
       type: ADD_POST_SUCCESS,
       data: result.data,
     });
-    yield put({ // user 리듀서의 데이터 수정
+    yield put({
+      // user 리듀서의 데이터 수정
       type: ADD_POST_TO_ME,
       data: result.data.id,
     });
@@ -154,7 +159,7 @@ function* watchAddPComment() {
 }
 
 function loadHashtagPostsAPI(tag) {
-  return axios.get(`/hashtag/${tag}`);
+  return axios.get(`/hashtag/${encodeURIComponent(tag)}`);
 }
 
 function* loadHashtagPosts(action) {
@@ -179,7 +184,7 @@ function* watchLoadHashtagPosts() {
 }
 
 function loadUserPostsAPI(id) {
-  return axios.get(`/user/${id}/posts`);
+  return axios.get(`/user/${id || 0}/posts`);
 }
 
 function* loadUserPosts(action) {
@@ -326,6 +331,38 @@ function* watchRetweet() {
   yield takeLatest(RETWEET_REQUEST, retweet);
 }
 
+function removePostAPI(postId) {
+  return axios.delete(`/post/${postId}`, {
+    withCredentials: true,
+  });
+}
+
+function* removePost(action) {
+  try {
+    const result = yield call(removePostAPI, action.data);
+    yield put({
+      type: REMOVE_POST_SUCCESS,
+      data: result.data,
+    });
+
+    yield put({
+      type: REMOVE_POST_OF_ME,
+      data: result.data,
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    yield put({
+      type: REMOVE_POST_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchRemovePost() {
+  yield takeLatest(REMOVE_POST_REQUEST, removePost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchMainPosts),
@@ -338,5 +375,6 @@ export default function* postSaga() {
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchRetweet),
+    fork(watchRemovePost),
   ]);
 }
