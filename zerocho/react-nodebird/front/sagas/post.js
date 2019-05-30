@@ -158,7 +158,7 @@ function* watchAddPComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
-function loadHashtagPostsAPI(tag, lastId) {
+function loadHashtagPostsAPI(tag, lastId = 0) {
   return axios.get(
     `/hashtag/${encodeURIComponent(tag)}?lastId=${lastId}&limit=10`,
   );
@@ -166,7 +166,7 @@ function loadHashtagPostsAPI(tag, lastId) {
 
 function* loadHashtagPosts(action) {
   try {
-    const result = yield call(loadHashtagPostsAPI, action.data);
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
     yield put({
       type: LOAD_HASHTAG_POSTS_SUCCESS,
       data: result.data,

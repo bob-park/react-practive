@@ -85,7 +85,7 @@ export default (state = initialState, action) => {
       case LOAD_MAIN_POSTS_REQUEST:
       case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_USER_POSTS_REQUEST:
-        draft.mainPosts = action.lastId === 0 ? [] : state.mainPosts;
+        draft.mainPosts = action.lastId ? state.mainPosts : [];
         draft.hasMorePost = action.lastId ? state.hasMorePost : true;
         draft.loadingMainPosts = true;
 

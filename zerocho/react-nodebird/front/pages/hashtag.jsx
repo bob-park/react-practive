@@ -2,7 +2,10 @@ import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { LOAD_HASHTAG_POSTS_REQUEST, LOAD_MAIN_POSTS_REQUEST } from '../reducers/post';
+import {
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_MAIN_POSTS_REQUEST,
+} from '../reducers/post';
 import PostCard from '../components/PostCard';
 
 const Hashtag = ({ tag }) => {
@@ -14,9 +17,10 @@ const Hashtag = ({ tag }) => {
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      if (hasMorePost) {
+      if (hasMorePost && mainPosts.length > 0) {
         dispatch({
-          type: LOAD_MAIN_POSTS_REQUEST,
+          type: LOAD_HASHTAG_POSTS_REQUEST,
+          data: tag,
           lastId: mainPosts[mainPosts.length - 1].id,
         });
       }
